@@ -7,10 +7,13 @@ from requests.auth import HTTPDigestAuth
 import xml.etree.ElementTree
 import re
 
-USER="admin"
-PASSWORD="g4t3s0f"
-HOST="mfa.demo.marklogic.com"
-APPLICATION_NAME="wisdom"
+import config
+
+USER=config.USER
+PASSWORD=config.PASSWORD
+HOST=config.HOST
+APPLICATION_NAME=config.APPLICATION_NAME
+
 APPLICATION_DATABASE=APPLICATION_NAME+"-content"
 
 DEFAULT_GROUP="Default"
