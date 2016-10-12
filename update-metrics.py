@@ -8,13 +8,15 @@ import xml.etree.ElementTree
 import re
 
 USER="admin"
-PASSWORD="admin"
-HOST=mfa.demo.marklogic.com
+PASSWORD="g4t3s0f"
+HOST="mfa.demo.marklogic.com"
 APPLICATION_NAME="wisdom"
 APPLICATION_DATABASE=APPLICATION_NAME+"-content"
 
 DEFAULT_GROUP="Default"
 SERVER_TYPE="Servers"
+
+DEBUG_ONLY=1
 
 cwc = CloudWatchConnection()
 
@@ -42,7 +44,7 @@ def get_data(path,desc,key,id,idName):
 	path = re.sub("\$_HOSTMLALIAS\$",str(id),path)
 	key = re.sub("\$SERVICEDESC\$",desc,key)
 
-	url = 'http://localhost:8002'+path
+	url = 'http://'+HOST+':8002'+path
 	if "?" in url:
 		url = url + "&format=json"
 	else:
@@ -61,14 +63,16 @@ def get_data(path,desc,key,id,idName):
 			if idName:
 				metricName = metricName + " : " +idName
 			print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(item["value"])
-			cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))			
+			if not DEBUG_ONLY:			
+				cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))			
 			print ""
 		else:			
 			for desc in item:
 				sub_item = item[desc]
 				unit = str(sub_item["units"])
 				print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(sub_item["value"])
-				cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))							
+				if not DEBUG_ONLY:
+					cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))							
 				print ""
 
 	if len(list(gen_dict_extract(key,json))) ==0:
