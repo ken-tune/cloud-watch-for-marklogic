@@ -1,0 +1,234 @@
+<metrics>
+  <metric type="Clusters">
+    <service_description>database-count</service_description>
+    <service_note>Count of Databases on the cluster</service_note>
+    <path>/manage/v2/databases</path>
+    <key>list-count</key>
+  </metric>
+  <metric type="Clusters">
+    <service_description>server-count</service_description>
+    <service_note>Count of App Servers on the cluster</service_note>
+    <path>/manage/v2/servers</path>
+    <key>list-count</key>
+  </metric>
+  <metric type="Clusters">
+    <service_description>host-count</service_description>
+    <service_note>Count of Hosts in the cluster</service_note>
+    <path>/manage/v2/hosts</path>
+    <key>list-count</key>
+  </metric>
+  <metric type="Clusters">
+    <service_description>foreign-cluster-count</service_description>
+    <service_note>Count of coupled foreign clusters</service_note>
+    <path>/manage/v2/clusters?cluster-role=foreign</path>
+    <key>list-count</key>
+  </metric>
+  <metric type="Clusters">
+    <service_description>is-bootstrapped</service_description>
+    <service_note>Local cluster bootstrapped with foreign cluster</service_note>
+    <path>/manage/v2/clusters/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+    <op>eq=true</op>
+  </metric>
+  <metric type="Servers">
+    <service_description>total-requests</service_description>
+    <service_note>Count of total requests</service_note>
+    <path>/manage/v2/requests?server-id=$_HOSTMLALIAS$&amp;seconds-min=60</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Servers">
+    <service_description>request-rate</service_description>
+    <service_note>Request rate</service_note>
+    <path>/manage/v2/servers/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Servers">
+    <service_description>expanded-tree-cache-hits</service_description>
+    <service_note>Expanded Tree Cache Hit Rate</service_note>
+    <path>/manage/v2/servers/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Servers">
+    <service_description>expanded-tree-cache-misses</service_description>
+    <service_note>Expanded Tree Cache Miss Rate</service_note>
+    <path>/manage/v2/servers/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Servers">
+    <service_description>query-count</service_description>
+    <service_note>Count of active query requests (vs updates)</service_note>
+    <path>/manage/v2/requests?server-id=$_HOSTMLALIAS$</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Servers">
+    <service_description>update-count</service_description>
+    <service_note>Count of active update requests (vs query requests)</service_note>
+    <path>/manage/v2/requests?server-id=$_HOSTMLALIAS$</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>state</service_description>
+    <service_note>State of the database</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+    <op>ne=unavailable</op>
+  </metric>
+  <metric type="Databases">
+    <service_description>failed-masters</service_description>
+    <service_note>Local Disk Failover (failed-masters)</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>async-replicating</service_description>
+    <service_note>Local Disk Failover (async-replicating)</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>database-replication-active</service_description>
+    <service_note>Database Replication active</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+    <op>eq=true</op>
+  </metric>
+  <metric type="Databases">
+    <service_description>foreign-forests-lag-exceeded</service_description>
+    <service_note>Database Replication foreign forest lag exceeded</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>backup-count</service_description>
+    <service_note>Number of backups in progress</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>compressed-tree-cache-miss-rate</service_description>
+    <service_note>Average number of misses on the compressed tree cache</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>compressed-tree-cache-hit-rate</service_description>
+    <service_note>Average number of hits on the compressed tree cache</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>documents</service_description>
+    <service_note>Document count for attached forests (excluding replicas)</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=counts</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>list-cache-miss-rate</service_description>
+    <service_note>Average number of misses on the list cache</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>list-cache-hit-rate</service_description>
+    <service_note>Average number of hits on the list cache</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>load-detail</service_description>
+    <service_note>Moving averages of various loads across attached forests (sec/sec)</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>rate-detail</service_description>
+    <service_note>Moving averages of various rates across attached forests (sec/sec)</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>merge-count</service_description>
+    <service_note>Number of merges in progress</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>data-size</service_description>
+    <service_note>Total size of forest data on disk (MB)</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>reindex-count</service_description>
+    <service_note>Number of reindexes in progress</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Databases">
+    <service_description>restore-count</service_description>
+    <service_note>Number of restores in progress</service_note>
+    <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Hosts">
+    <service_description>state-not-open</service_description>
+    <service_note>Count of non-open forests on host</service_note>
+    <path>/manage/v2/forests?view=status&amp;host-id=$_HOSTMLALIAS$</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Hosts">
+    <service_description>max-stands-per-forest</service_description>
+    <service_note>Maximum number of stands for a forest on this host</service_note>
+    <path>/manage/v2/forests?view=status&amp;host-id=$_HOSTMLALIAS$</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Hosts">
+    <service_description>min-capacity</service_description>
+    <service_note>Capacity of the forest with the least available disk space</service_note>
+    <path>/manage/v2/forests?view=status&amp;host-id=$_HOSTMLALIAS$</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Hosts">
+    <service_description>online</service_description>
+    <service_note>Host is online/offline</service_note>
+    <path>/manage/v2/hosts/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+    <op>eq=true</op>
+  </metric>
+  <metric type="Hosts">
+    <service_description>compressed-tree-cache-miss-rate</service_description>
+    <service_note>Average number of misses on the compressed tree cache</service_note>
+    <path>/manage/v2/forests?view=status&amp;host-id=$_HOSTMLALIAS$</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Hosts">
+    <service_description>compressed-tree-cache-hit-rate</service_description>
+    <service_note>Average number of hits on the compressed tree cache</service_note>
+    <path>/manage/v2/forests?view=status&amp;host-id=$_HOSTMLALIAS$</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Hosts">
+    <service_description>list-cache-miss-rate</service_description>
+    <service_note>Average number of misses on the list cache</service_note>
+    <path>/manage/v2/forests?view=status&amp;host-id=$_HOSTMLALIAS$</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Hosts">
+    <service_description>list-cache-hit-rate</service_description>
+    <service_note>Average number of hits on the list cache</service_note>
+    <path>/manage/v2/forests?view=status&amp;host-id=$_HOSTMLALIAS$</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Hosts">
+    <service_description>rate-detail</service_description>
+    <service_note>Host Rate Details</service_note>
+    <path>/manage/v2/hosts/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+  <metric type="Hosts">
+    <service_description>load-detail</service_description>
+    <service_note>Host Load Details</service_note>
+    <path>/manage/v2/hosts/$_HOSTMLALIAS$?view=status</path>
+    <key>$SERVICEDESC$</key>
+  </metric>
+</metrics>
