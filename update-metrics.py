@@ -7,6 +7,14 @@ from requests.auth import HTTPDigestAuth
 import xml.etree.ElementTree
 import re
 
+import optparse
+
+parser = optparse.OptionParser()
+parser.set_defaults(debug=False)
+parser.add_option('--debug',action="store_true",dest='debug')
+(options, args) = parser.parse_args()
+
+# Application specific configuration
 import config
 
 USER=config.USER
@@ -16,13 +24,14 @@ APPLICATION_NAME=config.APPLICATION_NAME
 
 APPLICATION_DATABASE=APPLICATION_NAME+"-content"
 
+# Useful Constants
 DEFAULT_GROUP="Default"
 SERVER_TYPE="Servers"
 
-DEBUG_ONLY=1
-
+# Cloud Watch Connection object
 cwc = CloudWatchConnection()
 
+# Translate our units into AWS units
 unitTranslation = {
 	"%":"Percent",
 	"MB":"Megabytes",
@@ -83,7 +92,7 @@ def get_data(path,desc,key,id,idName):
 				metricName = metricName + " : " +idName
 			if is_numeric(str(item["value"])):
 				print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(item["value"])
-				if not DEBUG_ONLY:			
+				if not options.debug:			
 					cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))			
 			else:
 				print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(item["value"])
@@ -94,8 +103,8 @@ def get_data(path,desc,key,id,idName):
 				unit = unitTranslation[str(sub_item["units"])]
 				if is_numeric(str(sub_item["value"])):				
 					print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(sub_item["value"])
-					if not DEBUG_ONLY:
-						cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))							
+					if not options.debug:
+						cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(sub_item["value"]))							
 				else:
 					print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(item["value"])
 
