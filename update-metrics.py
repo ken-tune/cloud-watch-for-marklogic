@@ -33,6 +33,9 @@ unitTranslation = {
 	"sec/sec":"Count/Second"
 }
 
+def is_numeric(_string):
+	return _string.replace('.','',1).isdigit()	
+
 def get_hosts():
 	url = 'http://'+HOST+':8002/manage/v2/hosts?format=json'
 	hosts = {}
@@ -75,18 +78,23 @@ def get_data(path,desc,key,id,idName):
 
 			if idName:
 				metricName = metricName + " : " +idName
-			print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(item["value"])
-			if not DEBUG_ONLY:			
-				cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))			
-			print ""+unit
+			if is_numeric(str(item["value"])):
+				print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(item["value"])
+				if not DEBUG_ONLY:			
+					cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))			
+			else:
+				print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(item["value"])
+
 		else:			
 			for desc in item:
 				sub_item= item[desc]
 				unit = unitTranslation[str(sub_item["units"])]
-				print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(sub_item["value"])
-				if not DEBUG_ONLY:
-					cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))							
-				print ""+unit
+				if is_numeric(str(sub_item["value"])):				
+					print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(sub_item["value"])
+					if not DEBUG_ONLY:
+						cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))							
+				else:
+					print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(item["value"])
 
 	if len(list(gen_dict_extract(key,json))) ==0:
 			print "XXX - " + key + " not found"				
