@@ -1,3 +1,6 @@
+import boto
+from boto.ec2.cloudwatch import CloudWatchConnection
+
 import requests
 from requests.auth import HTTPDigestAuth
 
@@ -11,6 +14,8 @@ APPLICATION_DATABASE=APPLICATION_NAME+"-content"
 
 DEFAULT_GROUP="Default"
 SERVER_TYPE="Servers"
+
+cwc = CloudWatchConnection()
 
 def get_hosts():
 	url = 'http://localhost:8002/manage/v2/hosts?format=json'
@@ -46,8 +51,8 @@ def get_data(path,desc,key,id,idName):
 
 	json =  requests.get(url, auth=HTTPDigestAuth(USER,PASSWORD)).json()
 
-	metricName = APPLICATION_NAME + " : " + desc
-	# cwc.put_metric_data(namespace="testns",name="testmetric",unit="Count",value=3.0)
+	metricName = desc
+
 	for item in  gen_dict_extract(key,json):
 		if 'value' in item:
 			unit = str(item["units"])
@@ -55,12 +60,14 @@ def get_data(path,desc,key,id,idName):
 			if idName:
 				metricName = metricName + " : " +idName
 			print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(item["value"])
+			cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))			
 			print ""
 		else:			
 			for desc in item:
 				sub_item = item[desc]
 				unit = str(sub_item["units"])
 				print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(sub_item["value"])
+				cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))							
 				print ""
 
 	if len(list(gen_dict_extract(key,json))) ==0:
