@@ -9,6 +9,7 @@ import re
 
 USER="admin"
 PASSWORD="admin"
+HOST=mfa.demo.marklogic.com
 APPLICATION_NAME="wisdom"
 APPLICATION_DATABASE=APPLICATION_NAME+"-content"
 
@@ -18,7 +19,7 @@ SERVER_TYPE="Servers"
 cwc = CloudWatchConnection()
 
 def get_hosts():
-	url = 'http://localhost:8002/manage/v2/hosts?format=json'
+	url = 'http://'+HOST+':8002/manage/v2/hosts?format=json'
 	hosts = {}
 	for item in requests.get(url, auth=HTTPDigestAuth(USER,PASSWORD)).json()["host-default-list"]["list-items"]["list-item"]:
 		hosts[item["idref"]] = item["nameref"]
