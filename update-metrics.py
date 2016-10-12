@@ -20,6 +20,19 @@ DEBUG_ONLY=1
 
 cwc = CloudWatchConnection()
 
+unitTranslation = {
+	"%":"Percent",
+	"MB":"Megabytes",
+	"MB/sec":"Megabytes/Second",
+	"bool":"None",
+	"enum":"None",
+	"hits/sec":"Count/Second",
+	"misses/sec":"Count/Second",
+	"quantity":"Count",
+	"quantity/sec":"Count/Second",
+	"sec/sec":"Count/Second"
+}
+
 def get_hosts():
 	url = 'http://'+HOST+':8002/manage/v2/hosts?format=json'
 	hosts = {}
@@ -56,24 +69,24 @@ def get_data(path,desc,key,id,idName):
 
 	metricName = desc
 
-	for item in  gen_dict_extract(key,json):
+	for item in gen_dict_extract(key,json):
 		if 'value' in item:
-			unit = str(item["units"])
+			unit = unitTranslation[str(item["units"])]
 
 			if idName:
 				metricName = metricName + " : " +idName
 			print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(item["value"])
 			if not DEBUG_ONLY:			
 				cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))			
-			print ""
+			print ""+unit
 		else:			
 			for desc in item:
-				sub_item = item[desc]
-				unit = str(sub_item["units"])
+				sub_item= item[desc]
+				unit = unitTranslation[str(sub_item["units"])]
 				print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(sub_item["value"])
 				if not DEBUG_ONLY:
 					cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))							
-				print ""
+				print ""+unit
 
 	if len(list(gen_dict_extract(key,json))) ==0:
 			print "XXX - " + key + " not found"				
