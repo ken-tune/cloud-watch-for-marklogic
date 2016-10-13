@@ -20,9 +20,11 @@ import config
 USER=config.USER
 PASSWORD=config.PASSWORD
 HOST=config.HOST
-APPLICATION_NAME=config.APPLICATION_NAME
-
-APPLICATION_DATABASE=APPLICATION_NAME+"-content"
+SERVER_NAME=config.SERVER_NAME
+if hasattr(config,"SERVER_DATABASE"):
+    SERVER_DATABASE=config.SERVER_DATABASE
+else:
+    SERVER_DATABASE=SERVER_NAME+"-content"
 
 # Useful Constants
 DEFAULT_GROUP="Default"
@@ -93,7 +95,7 @@ def get_data(path,desc,key,id,idName):
 			if is_numeric(str(item["value"])):
 				print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(item["value"])
 				if not options.debug:			
-					cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))			
+					cwc.put_metric_data(namespace=SERVER_NAME,name=metricName,unit=unit,value=str(item["value"]))			
 			else:
 				print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(item["value"])
 
@@ -104,7 +106,7 @@ def get_data(path,desc,key,id,idName):
 				if is_numeric(str(sub_item["value"])):				
 					print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(sub_item["value"])
 					if not options.debug:
-						cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(sub_item["value"]))							
+						cwc.put_metric_data(namespace=SERVER_NAME,name=metricName,unit=unit,value=str(sub_item["value"]))							
 				else:
 					print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(item["value"])
 
@@ -114,7 +116,7 @@ def get_data(path,desc,key,id,idName):
 
 e = xml.etree.ElementTree.parse('metrics.xml').getroot()
 
-_hash = {"clusters":"xxx","hosts":get_hosts(),"databases":APPLICATION_DATABASE,"servers":APPLICATION_NAME}
+_hash = {"clusters":"xxx","hosts":get_hosts(),"databases":SERVER_DATABASE,"servers":SERVER_NAME}
 
 for metric in e.findall('metric'):
 	_type = metric.get("type")
