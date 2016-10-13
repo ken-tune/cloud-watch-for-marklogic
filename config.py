@@ -1,4 +1,5 @@
 USER="admin"
 PASSWORD="admin"
 HOST="localhost"
-APPLICATION_NAME="wisdom"
+SERVER_NAME=
+SERVER_DATABASE=
