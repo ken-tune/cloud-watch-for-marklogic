@@ -67,8 +67,8 @@ def get_clusters():
 	url=urlPrefix() + "/manage/v2/clusters?cluster-role=foreign&format=json"
 	clusters = {}
 	cluster_data = get_json(url)["cluster-default-list"]["list-items"]
-	if hasattr(cluster_data,"list-item"):
-		for item in get_json(url)["cluster-default-list"]["list-items"]["list-item"]:
+	if "list-item" in cluster_data:
+		for item in cluster_data["list-item"]:
 			clusters[item["idref"]] = item["nameref"]
 	return clusters
 
@@ -90,13 +90,13 @@ def processValue(value,op):
 		return value
 	else:
 		parts = op.split("=")
-		if(op[0] == "eq"):
-			if op[1] == value:
+		if(parts[0] == "eq"):
+			if parts[1] == value:
 				return 1
 			else:
 				return 0
-		elif(op[0] == "ne"):
-			if op[1] != value:
+		elif(parts[0] == "ne"):
+			if parts[1] != value:
 				return 1
 			else:
 				return 0
@@ -113,8 +113,12 @@ def process_item(item,metricName,op):
 	if isinstance(item,str):
 		value = item
 	elif isinstance(item,dict):
-		value = str(item["value"])
-
+                if isinstance(item["value"],bool):
+                    value=str(item["value"]).lower()
+                else:
+		    value = str(item["value"])
+        else:
+                value=str(item)
 	value = processValue(value,op)
 	if isinstance(value,int) or is_numeric(value):
 		print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(value)
@@ -135,9 +139,7 @@ def get_data(path,desc,key,id,idName,op):
 	if _type == SERVER_TYPE:
 		url  = url + "&group-id="+DEFAULT_GROUP
 	json =  get_json(url)
-
 	metricName = desc
-
 	for item in gen_dict_extract(key,json):
 		if isinstance(item,dict):
 			if 'value' in item:
@@ -148,6 +150,8 @@ def get_data(path,desc,key,id,idName,op):
 				for desc in item:
 					sub_item= item[desc]
 					process_item(sub_item,desc,op)
+                else:
+                    process_item({"value":item,"unit":"Count"},desc,op)
 
 	if len(list(gen_dict_extract(key,json))) ==0:
 			print "XXX - " + key + " not found"				
@@ -170,6 +174,6 @@ for metric in e.findall('metric'):
 	if isinstance(_ids,dict):
 		for _id in _ids:
 			get_data(_path,_desc,_key,_id,_ids[_id],_op)
-	else:			
+	else:
 		get_data(_path,_desc,_key,_ids,None,_op)
 	
