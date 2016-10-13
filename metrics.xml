@@ -1,23 +1,23 @@
 <metrics>
-  <metric type="Clusters">
+  <metric type="LocalCluster">
     <service_description>database-count</service_description>
     <service_note>Count of Databases on the cluster</service_note>
     <path>/manage/v2/databases</path>
     <key>list-count</key>
   </metric>
-  <metric type="Clusters">
+  <metric type="LocalCluster">
     <service_description>server-count</service_description>
     <service_note>Count of App Servers on the cluster</service_note>
     <path>/manage/v2/servers</path>
     <key>list-count</key>
   </metric>
-  <metric type="Clusters">
+  <metric type="LocalCluster">
     <service_description>host-count</service_description>
     <service_note>Count of Hosts in the cluster</service_note>
     <path>/manage/v2/hosts</path>
     <key>list-count</key>
   </metric>
-  <metric type="Clusters">
+  <metric type="LocalCluster">
     <service_description>foreign-cluster-count</service_description>
     <service_note>Count of coupled foreign clusters</service_note>
     <path>/manage/v2/clusters?cluster-role=foreign</path>

@@ -47,22 +47,30 @@ unitTranslation = {
 	"sec/sec":"Count/Second"
 }
 
+def urlPrefix():
+	return "http://"+HOST+":8002"
+
 def is_numeric(_string):
 	return _string.replace('.','',1).isdigit()	
 
+def get_json(url):
+	return requests.get(url, auth=HTTPDigestAuth(USER,PASSWORD)).json()
+
 def get_hosts():
-	url = 'http://'+HOST+':8002/manage/v2/hosts?format=json'
+	url = urlPrefix() + "/manage/v2/hosts?format=json"
 	hosts = {}
-	for item in requests.get(url, auth=HTTPDigestAuth(USER,PASSWORD)).json()["host-default-list"]["list-items"]["list-item"]:
+	for item in get_json(url)["host-default-list"]["list-items"]["list-item"]:
 		hosts[item["idref"]] = item["nameref"]
 	return hosts
 
 def get_clusters():
-        url="http://"+HOST+":8002/manage/v2/clusters?cluster-role=foreign&format=json"
-        clusters = {}
-        for item in requests.get(url,auth=HTTPDigestAuth(USER,PASSWORD)).json()["cluster-default-list"]["list-items"]["list-item"]:
-            clusters[item["idref"]] = item["nameref"]
-        return clusters
+	url=urlPrefix() + "/manage/v2/clusters?cluster-role=foreign&format=json"
+	clusters = {}
+	cluster_data = get_json(url)["cluster-default-list"]["list-items"]
+	if hasattr(cluster_data,"list-item"):
+		for item in get_json(url)["cluster-default-list"]["list-items"]["list-item"]:
+			clusters[item["idref"]] = item["nameref"]
+	return clusters
 
 def gen_dict_extract(key, var):
     if hasattr(var,'iteritems'):
@@ -77,45 +85,69 @@ def gen_dict_extract(key, var):
                     for result in gen_dict_extract(key, d):
                         yield result
 
-def get_data(path,desc,key,id,idName):
+def processValue(value,op):
+	if op == None:
+		return value
+	else:
+		parts = op.split("=")
+		if(op[0] == "eq"):
+			if op[1] == value:
+				return 1
+			else:
+				return 0
+		elif(op[0] == "ne"):
+			if op[1] != value:
+				return 1
+			else:
+				return 0
+		else:
+			return 0
+
+def process_item(item,metricName,op):
+	if(op != None):
+		unit = "None"
+	else:
+		unit = unitTranslation[str(item["units"])]	
+
+	value=None
+	if isinstance(item,str):
+		value = item
+	elif isinstance(item,dict):
+		value = str(item["value"])
+
+	value = processValue(value,op)
+	if isinstance(value,int) or is_numeric(value):
+		print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(value)
+		if not options.debug:			
+			cwc.put_metric_data(namespace=SERVER_NAME,name=metricName,unit=unit,value=value)			
+	else:
+		print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(value)
+
+def get_data(path,desc,key,id,idName,op):
 	path = re.sub("\$_HOSTMLALIAS\$",str(id),path)
 	key = re.sub("\$SERVICEDESC\$",desc,key)
 
-	url = 'http://'+HOST+':8002'+path
+	url = urlPrefix() +path
 	if "?" in url:
 		url = url + "&format=json"
 	else:
 		url = url + "?format=json"		
 	if _type == SERVER_TYPE:
 		url  = url + "&group-id="+DEFAULT_GROUP
-
-	json =  requests.get(url, auth=HTTPDigestAuth(USER,PASSWORD)).json()
+	json =  get_json(url)
 
 	metricName = desc
 
 	for item in gen_dict_extract(key,json):
-		if 'value' in item:
-			unit = unitTranslation[str(item["units"])]
-
-			if idName:
-				metricName = metricName + " : " +idName
-			if is_numeric(str(item["value"])):
-				print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(item["value"])
-				if not options.debug:			
-					cwc.put_metric_data(namespace=SERVER_NAME,name=metricName,unit=unit,value=str(item["value"]))			
-			else:
-				print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(item["value"])
-
-		else:			
-			for desc in item:
-				sub_item= item[desc]
-				unit = unitTranslation[str(sub_item["units"])]
-				if is_numeric(str(sub_item["value"])):				
-					print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(sub_item["value"])
-					if not options.debug:
-						cwc.put_metric_data(namespace=SERVER_NAME,name=metricName,unit=unit,value=str(sub_item["value"]))							
-				else:
-					print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(item["value"])
+		if isinstance(item,dict):
+			if 'value' in item:
+				if idName:
+					metricName = metricName + " : " +idName
+				process_item(item,metricName,op)
+			else:			
+				for desc in item:
+					sub_item= item[desc]
+					process_item(sub_item,desc,op)
 
 	if len(list(gen_dict_extract(key,json))) ==0:
 			print "XXX - " + key + " not found"				
@@ -123,7 +155,7 @@ def get_data(path,desc,key,id,idName):
 
 e = xml.etree.ElementTree.parse('metrics.xml').getroot()
 
-_hash = {"clusters":get_clusters(),"hosts":get_hosts(),"databases":SERVER_DATABASE,"servers":SERVER_NAME}
+_hash = {"localcluster":1,"clusters":get_clusters(),"hosts":get_hosts(),"databases":SERVER_DATABASE,"servers":SERVER_NAME}
 
 for metric in e.findall('metric'):
 	_type = metric.get("type")
@@ -131,10 +163,13 @@ for metric in e.findall('metric'):
 	_path = metric.find("path").text
 	_key = metric.find("key").text
 	_desc = metric.find("service_description").text
+	_op = None
+	if metric.find("op") != None:
+		_op  = metric.find("op").text
 
 	if isinstance(_ids,dict):
 		for _id in _ids:
-			get_data(_path,_desc,_key,_id,_ids[_id])
+			get_data(_path,_desc,_key,_id,_ids[_id],_op)
 	else:			
-		get_data(_path,_desc,_key,_ids,None)
+		get_data(_path,_desc,_key,_ids,None,_op)
 	
