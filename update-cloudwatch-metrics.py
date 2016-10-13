@@ -57,6 +57,13 @@ def get_hosts():
 		hosts[item["idref"]] = item["nameref"]
 	return hosts
 
+def get_clusters():
+        url="http://"+HOST+":8002/manage/v2/clusters?cluster-role=foreign&format=json"
+        clusters = {}
+        for item in requests.get(url,auth=HTTPDigestAuth(USER,PASSWORD)).json()["cluster-default-list"]["list-items"]["list-item"]:
+            clusters[item["idref"]] = item["nameref"]
+        return clusters
+
 def gen_dict_extract(key, var):
     if hasattr(var,'iteritems'):
         for k, v in var.iteritems():
@@ -116,7 +123,7 @@ def get_data(path,desc,key,id,idName):
 
 e = xml.etree.ElementTree.parse('metrics.xml').getroot()
 
-_hash = {"clusters":"xxx","hosts":get_hosts(),"databases":SERVER_DATABASE,"servers":SERVER_NAME}
+_hash = {"clusters":get_clusters(),"hosts":get_hosts(),"databases":SERVER_DATABASE,"servers":SERVER_NAME}
 
 for metric in e.findall('metric'):
 	_type = metric.get("type")
