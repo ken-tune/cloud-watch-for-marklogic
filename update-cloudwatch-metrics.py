@@ -20,9 +20,11 @@ import config
 USER=config.USER
 PASSWORD=config.PASSWORD
 HOST=config.HOST
-APPLICATION_NAME=config.APPLICATION_NAME
-
-APPLICATION_DATABASE=APPLICATION_NAME+"-content"
+SERVER_NAME=config.SERVER_NAME
+if hasattr(config,"SERVER_DATABASE"):
+    SERVER_DATABASE=config.SERVER_DATABASE
+else:
+    SERVER_DATABASE=SERVER_NAME+"-content"
 
 # Useful Constants
 DEFAULT_GROUP="Default"
@@ -54,6 +56,13 @@ def get_hosts():
 	for item in requests.get(url, auth=HTTPDigestAuth(USER,PASSWORD)).json()["host-default-list"]["list-items"]["list-item"]:
 		hosts[item["idref"]] = item["nameref"]
 	return hosts
+
+def get_clusters():
+        url="http://"+HOST+":8002/manage/v2/clusters?cluster-role=foreign&format=json"
+        clusters = {}
+        for item in requests.get(url,auth=HTTPDigestAuth(USER,PASSWORD)).json()["cluster-default-list"]["list-items"]["list-item"]:
+            clusters[item["idref"]] = item["nameref"]
+        return clusters
 
 def gen_dict_extract(key, var):
     if hasattr(var,'iteritems'):
@@ -93,7 +102,7 @@ def get_data(path,desc,key,id,idName):
 			if is_numeric(str(item["value"])):
 				print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(item["value"])
 				if not options.debug:			
-					cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(item["value"]))			
+					cwc.put_metric_data(namespace=SERVER_NAME,name=metricName,unit=unit,value=str(item["value"]))			
 			else:
 				print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(item["value"])
 
@@ -104,7 +113,7 @@ def get_data(path,desc,key,id,idName):
 				if is_numeric(str(sub_item["value"])):				
 					print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(sub_item["value"])
 					if not options.debug:
-						cwc.put_metric_data(namespace=APPLICATION_NAME,name=metricName,unit=unit,value=str(sub_item["value"]))							
+						cwc.put_metric_data(namespace=SERVER_NAME,name=metricName,unit=unit,value=str(sub_item["value"]))							
 				else:
 					print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(item["value"])
 
@@ -114,7 +123,7 @@ def get_data(path,desc,key,id,idName):
 
 e = xml.etree.ElementTree.parse('metrics.xml').getroot()
 
-_hash = {"clusters":"xxx","hosts":get_hosts(),"databases":APPLICATION_DATABASE,"servers":APPLICATION_NAME}
+_hash = {"clusters":get_clusters(),"hosts":get_hosts(),"databases":SERVER_DATABASE,"servers":SERVER_NAME}
 
 for metric in e.findall('metric'):
 	_type = metric.get("type")
