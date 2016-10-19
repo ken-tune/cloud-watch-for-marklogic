@@ -4,24 +4,52 @@
     <service_note>Count of Databases on the cluster</service_note>
     <path>/manage/v2/databases</path>
     <key>list-count</key>
+    <thresholds>
+        <threshold>
+          <type>warning</type>
+          <comparison-operator>ne</comparison-operator>
+          <value>#CURRENT_VALUE#</value>
+        </threshold>
+    </thresholds>
   </metric>
   <metric type="LocalCluster">
     <service_description>server-count</service_description>
     <service_note>Count of App Servers on the cluster</service_note>
     <path>/manage/v2/servers</path>
     <key>list-count</key>
+    <thresholds>
+        <threshold>
+          <type>warning</type>
+          <comparison-operator>ne</comparison-operator>
+          <value>#CURRENT_VALUE#</value>
+        </threshold>
+    </thresholds>    
   </metric>
   <metric type="LocalCluster">
     <service_description>host-count</service_description>
     <service_note>Count of Hosts in the cluster</service_note>
     <path>/manage/v2/hosts</path>
     <key>list-count</key>
+    <thresholds>
+        <threshold>
+          <type>warning</type>
+          <comparison-operator>ne</comparison-operator>
+          <value>#CURRENT_VALUE#</value>
+        </threshold>
+    </thresholds>    
   </metric>
   <metric type="LocalCluster">
     <service_description>foreign-cluster-count</service_description>
     <service_note>Count of coupled foreign clusters</service_note>
     <path>/manage/v2/clusters?cluster-role=foreign</path>
     <key>list-count</key>
+    <thresholds>
+        <threshold>
+          <type>warning</type>
+          <comparison-operator>ne</comparison-operator>
+          <value>#CURRENT_VALUE#</value>
+        </threshold>
+    </thresholds>    
   </metric>
   <metric type="Clusters">
     <service_description>is-bootstrapped</service_description>
@@ -29,12 +57,32 @@
     <path>/manage/v2/clusters/$_HOSTMLALIAS$?view=status&amp;cluster-role=foreign</path>
     <key>$SERVICEDESC$</key>
     <op>eq=true</op>
+    <thresholds>
+        <!-- Means cluster is not bootstrapped -->
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>lt</comparison-operator>
+          <value>1</value>
+        </threshold>
+    </thresholds>        
   </metric>
   <metric type="Servers">
     <service_description>total-requests</service_description>
     <service_note>Count of total requests</service_note>
     <path>/manage/v2/requests?server-id=$_HOSTMLALIAS$&amp;seconds-min=60</path>
     <key>$SERVICEDESC$</key>
+    <thresholds>
+        <threshold>
+          <type>warning</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>10</value>
+        </threshold>      
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>20</value>
+        </threshold>
+    </thresholds>            
   </metric>
   <metric type="Servers">
     <service_description>request-rate</service_description>
@@ -72,18 +120,40 @@
     <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
     <key>$SERVICEDESC$</key>
     <op>ne=unavailable</op>
+    <thresholds>
+        <!-- means db is unavailable -->
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>0</value>
+        </threshold>
+    </thresholds>            
   </metric>
   <metric type="Databases">
     <service_description>failed-masters</service_description>
     <service_note>Local Disk Failover (failed-masters)</service_note>
     <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
     <key>$SERVICEDESC$</key>
+    <thresholds>
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>0</value>
+        </threshold>
+    </thresholds>            
   </metric>
   <metric type="Databases">
     <service_description>async-replicating</service_description>
     <service_note>Local Disk Failover (async-replicating)</service_note>
     <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
     <key>$SERVICEDESC$</key>
+    <thresholds>
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>0</value>
+        </threshold>
+    </thresholds>            
   </metric>
   <metric type="Databases">
     <service_description>database-replication-active</service_description>
@@ -91,12 +161,27 @@
     <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
     <key>$SERVICEDESC$</key>
     <op>eq=true</op>
+    <thresholds>
+        <!-- means db is not replicating -->
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>lt</comparison-operator>
+          <value>1</value>
+        </threshold>
+    </thresholds>            
   </metric>
   <metric type="Databases">
     <service_description>foreign-forests-lag-exceeded</service_description>
     <service_note>Database Replication foreign forest lag exceeded</service_note>
     <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
     <key>$SERVICEDESC$</key>
+    <thresholds>
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>0</value>
+        </threshold>
+    </thresholds>            
   </metric>
   <metric type="Databases">
     <service_description>backup-count</service_description>
@@ -175,18 +260,49 @@
     <service_note>Count of non-open forests on host</service_note>
     <path>/manage/v2/forests?view=status&amp;host-id=$_HOSTMLALIAS$</path>
     <key>$SERVICEDESC$</key>
+    <thresholds>
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>0</value>
+        </threshold>
+    </thresholds>            
   </metric>
   <metric type="Hosts">
     <service_description>max-stands-per-forest</service_description>
     <service_note>Maximum number of stands for a forest on this host</service_note>
     <path>/manage/v2/forests?view=status&amp;host-id=$_HOSTMLALIAS$</path>
     <key>$SERVICEDESC$</key>
+    <thresholds>
+        <threshold>
+          <type>warning</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>35</value>
+        </threshold>      
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>50</value>
+        </threshold>
+    </thresholds>                
   </metric>
   <metric type="Hosts">
     <service_description>min-capacity</service_description>
     <service_note>Capacity of the forest with the least available disk space</service_note>
     <path>/manage/v2/forests?view=status&amp;host-id=$_HOSTMLALIAS$</path>
     <key>$SERVICEDESC$</key>
+    <thresholds>
+        <threshold>
+          <type>warning</type>
+          <comparison-operator>lt</comparison-operator>
+          <value>15</value>
+        </threshold>      
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>lt</comparison-operator>
+          <value>10</value>
+        </threshold>
+    </thresholds>                    
   </metric>
   <metric type="Hosts">
     <service_description>online</service_description>
@@ -194,6 +310,14 @@
     <path>/manage/v2/hosts/$_HOSTMLALIAS$?view=status</path>
     <key>$SERVICEDESC$</key>
     <op>eq=true</op>
+    <thresholds>
+        <!-- means host is offline -->
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>lt</comparison-operator>
+          <value>1</value>
+        </threshold>
+    </thresholds>                    
   </metric>
   <metric type="Hosts">
     <service_description>compressed-tree-cache-miss-rate</service_description>

@@ -1,5 +1,6 @@
 USER="admin"
 PASSWORD="admin"
 HOST="localhost"
-SERVER_NAME=
-SERVER_DATABASE=
+SERVER_NAME="wisdom"
+SERVER_DATABASE="wisdom-content"
+SNS_TOPIC="arn:aws:sns:us-east-1:386293050690:Cluster"

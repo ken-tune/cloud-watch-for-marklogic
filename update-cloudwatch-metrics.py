@@ -11,24 +11,33 @@ import optparse
 
 parser = optparse.OptionParser()
 parser.set_defaults(debug=False)
+parser.set_defaults(setAlarm=False)
 parser.add_option('--debug',action="store_true",dest='debug')
+parser.add_option('--setAlarm',action="store_true",dest='setAlarm')
 (options, args) = parser.parse_args()
+
+# Constants
+CURRENT_VALUE_INSTRUCTION = "#CURRENT_VALUE#"
+DEFAULT_GROUP="Default"
+SERVER_TYPE="Servers"
+CONFIG_NE_OPERATOR="ne"
+CONFIG_GT_OPERATOR="gt"
+CONFIG_LT_OPERATOR="lt"
+AWS_LT_OPERATOR="LessThanThreshold"
+AWS_GT_OPERATOR="GreaterThanThreshold"
 
 # Application specific configuration
 import config
-
 USER=config.USER
 PASSWORD=config.PASSWORD
 HOST=config.HOST
 SERVER_NAME=config.SERVER_NAME
+SNS_TOPIC=config.SNS_TOPIC
+
 if hasattr(config,"SERVER_DATABASE"):
     SERVER_DATABASE=config.SERVER_DATABASE
 else:
     SERVER_DATABASE=SERVER_NAME+"-content"
-
-# Useful Constants
-DEFAULT_GROUP="Default"
-SERVER_TYPE="Servers"
 
 # Cloud Watch Connection object
 cwc = CloudWatchConnection()
@@ -103,7 +112,7 @@ def processValue(value,op):
 		else:
 			return 0
 
-def process_item(item,metricName,op):
+def process_item(item,metricName,op,thresholds):
 	if(op != None):
 		unit = "None"
 	else:
@@ -121,13 +130,29 @@ def process_item(item,metricName,op):
                 value=str(item)
 	value = processValue(value,op)
 	if isinstance(value,int) or is_numeric(value):
-		print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(value)
-		if not options.debug:			
-			cwc.put_metric_data(namespace=SERVER_NAME,name=metricName,unit=unit,value=value)			
+		if not options.setAlarm:
+			print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(value)
+			if not options.debug:			
+				cwc.put_metric_data(namespace=SERVER_NAME,name=metricName,unit=unit,value=value)			
+		else:
+			if thresholds is not None:
+				for threshold in thresholds.iter("threshold"):
+					thresholdType = threshold.find("type").text
+					thresholdOperator = threshold.find("comparison-operator").text
+					thresholdValue = threshold.find("value").text
+					if thresholdValue == CURRENT_VALUE_INSTRUCTION:
+						thresholdValue = value
+					if thresholdOperator == CONFIG_NE_OPERATOR:
+						set_alarm(name=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
+						set_alarm(name=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
+					elif thresholdOperator == CONFIG_GT_OPERATOR:
+						set_alarm(name=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
+					elif thresholdOperator == CONFIG_LT_OPERATOR:
+						set_alarm(name=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
 	else:
 		print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(value)
 
-def get_data(path,desc,key,id,idName,op):
+def get_data(path,desc,key,id,idName,op,thresholds):
 	path = re.sub("\$_HOSTMLALIAS\$",str(id),path)
 	key = re.sub("\$SERVICEDESC\$",desc,key)
 
@@ -145,16 +170,29 @@ def get_data(path,desc,key,id,idName,op):
 			if 'value' in item:
 				if idName:
 					metricName = metricName + " : " +idName
-				process_item(item,metricName,op)
+				process_item(item,metricName,op,thresholds)
 			else:			
 				for desc in item:
 					sub_item= item[desc]
-					process_item(sub_item,desc,op)
+					process_item(sub_item,desc,op,thresholds)
                 else:
                     process_item({"value":item,"unit":"Count"},desc,op)
 
 	if len(list(gen_dict_extract(key,json))) ==0:
 			print "XXX - " + key + " not found"				
+
+def set_alarm(name,thresholdValue,unit,thresholds,operator):	
+	print "put-metric-alarm(alarm-name="+name+ \
+	",alarm-description="+name+\
+	",metric-name="+name+\
+	",namespace="+SERVER_NAME+\
+	",statistic=Average"+\
+	",period=120"+\
+	"threshold="+thresholdValue+\
+	"comparison-operator="+operator+\
+	",evaluation-periods=1"+\
+	",alarm-actions="+config.SNS_TOPIC+\
+	",unit="+unit
 
 
 e = xml.etree.ElementTree.parse('metrics.xml').getroot()
@@ -167,13 +205,15 @@ for metric in e.findall('metric'):
 	_path = metric.find("path").text
 	_key = metric.find("key").text
 	_desc = metric.find("service_description").text
+	thresholds = metric.find("thresholds")
+
 	_op = None
 	if metric.find("op") != None:
 		_op  = metric.find("op").text
 
 	if isinstance(_ids,dict):
 		for _id in _ids:
-			get_data(_path,_desc,_key,_id,_ids[_id],_op)
+			get_data(_path,_desc,_key,_id,_ids[_id],_op,thresholds)
 	else:
-		get_data(_path,_desc,_key,_ids,None,_op)
+		get_data(_path,_desc,_key,_ids,None,_op,thresholds)
 	
