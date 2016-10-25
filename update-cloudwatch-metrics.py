@@ -146,23 +146,23 @@ def process_item(item,metricName,op,thresholds):
 					if thresholdValue == CURRENT_VALUE_INSTRUCTION:
 						thresholdValue = value
 					if thresholdOperator == CONFIG_NE_OPERATOR:
-						set_alarm(name=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
-						set_alarm(name=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
+						set_alarm(metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
+						set_alarm(metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
 					elif thresholdOperator == CONFIG_GT_OPERATOR:
-						set_alarm(name=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
+						set_alarm(metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
 					elif thresholdOperator == CONFIG_LT_OPERATOR:
-						set_alarm(name=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
+						set_alarm(metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
 		if options.deleteAlarm:
 			if thresholds is not None:
 				for threshold in thresholds.iter("threshold"):
 					thresholdOperator = threshold.find("comparison-operator").text
 					if thresholdOperator == CONFIG_NE_OPERATOR:
-						delete_alarm(name=metricName)
-						delete_alarm(name=metricName)						
+						delete_alarm(metricName=metricName)
+						delete_alarm(metricName=metricName)						
 					elif thresholdOperator == CONFIG_GT_OPERATOR:
-						delete_alarm(name=metricName)
+						delete_alarm(metricName=metricName)
 					elif thresholdOperator == CONFIG_LT_OPERATOR:
-						delete_alarm(name=metricName)
+						delete_alarm(metricName=metricName)
 
 	else:
 		print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(value)
@@ -196,10 +196,10 @@ def get_data(path,desc,key,id,idName,op,thresholds):
 	if len(list(gen_dict_extract(key,json))) ==0:
 			print "XXX - " + key + " not found"				
 
-def set_alarm(name,thresholdValue,unit,thresholds,operator):	
-	print "put-metric-alarm(alarm-name="+name+ \
-	",alarm-description="+name+\
-	",metric-name="+name+\
+def set_alarm(metricName,thresholdValue,unit,thresholds,operator):	
+	print "put-metric-alarm(alarm-name="+metricName+ \
+	",alarm-description="+metricName+\
+	",metric-name="+metricName+\
 	",namespace="+SERVER_NAME+\
 	",statistic=Average"+\
 	",period=120"+\
@@ -210,10 +210,10 @@ def set_alarm(name,thresholdValue,unit,thresholds,operator):
 	",unit="+unit
 	if not options.debug:
 		cwc.put_metric_alarm(MetricAlarm(
-			name=name,
-			description=name,
+			name=metricName,
+			description=metricName,
 			alarm_actions=config.SNS_TOPIC,
-			metric=name,
+			metric=metricName,
 			namespace=SERVER_NAME,
 			statistic="Average",
 			period=120,
