@@ -153,6 +153,9 @@ def process_item(item,metricName,op,thresholds):
 					elif thresholdOperator == CONFIG_LT_OPERATOR:
 						set_alarm(name=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
 		if options.deleteAlaram
+			if thresholds is not None:
+				for threshold in thresholds.iter("threshold"):
+					thresholdOperator = threshold.find("comparison-operator").text
 					if thresholdOperator == CONFIG_NE_OPERATOR:
 						delete_alarm(name=metricName)
 						delete_alarm(name=metricName)						
