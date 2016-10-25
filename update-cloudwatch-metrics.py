@@ -157,12 +157,12 @@ def process_item(item,metricName,op,thresholds):
 				for threshold in thresholds.iter("threshold"):
 					thresholdOperator = threshold.find("comparison-operator").text
 					if thresholdOperator == CONFIG_NE_OPERATOR:
-						delete_alarm(metricName=metricName)
-						delete_alarm(metricName=metricName)						
+						delete_alarm(alarmName=metricName)
+						delete_alarm(alarmName=metricName)						
 					elif thresholdOperator == CONFIG_GT_OPERATOR:
-						delete_alarm(metricName=metricName)
+						delete_alarm(alarmName=metricName)
 					elif thresholdOperator == CONFIG_LT_OPERATOR:
-						delete_alarm(metricName=metricName)
+						delete_alarm(alarmName=metricName)
 
 	else:
 		print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(value)
