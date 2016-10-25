@@ -210,7 +210,7 @@ def set_alarm(alarmName,metricName,thresholdValue,unit,thresholds,operator):
 	",unit="+unit
 	if not options.debug:
 		cwc.put_metric_alarm(MetricAlarm(
-			name=metricName,
+			name=alarmName,
 			description=metricName,
 			alarm_actions=config.SNS_TOPIC,
 			metric=metricName,
