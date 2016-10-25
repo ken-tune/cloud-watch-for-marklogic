@@ -11,12 +11,9 @@ touch $TMP_CRON_FILE
 #write out current crontab
 crontab -l | grep -v $UPDATE_SCRIPT > $TMP_CRON_FILE
 
-#echo new cron into cron file
-echo "* * * * *  cd $RUN_DIR ; python $UPDATE_SCRIPT_PATH --storeMetrics >/dev/null" >> $TMP_CRON_FILE
-
 #install new cron file
 crontab $TMP_CRON_FILE 
 
 rm $TMP_CRON_FILE
 
-echo Cloud Watch Metric gathering cronned
+echo Cloud Watch metric cron job removed
