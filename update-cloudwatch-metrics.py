@@ -146,8 +146,8 @@ def process_item(item,metricName,op,thresholds):
 					if thresholdValue == CURRENT_VALUE_INSTRUCTION:
 						thresholdValue = value
 					if thresholdOperator == CONFIG_NE_OPERATOR:
-						set_alarm(metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
-						set_alarm(metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
+						set_alarm(metricName=metricName+"-hi",thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
+						set_alarm(metricName=metricName+"-lo",thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
 					elif thresholdOperator == CONFIG_GT_OPERATOR:
 						set_alarm(metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
 					elif thresholdOperator == CONFIG_LT_OPERATOR:
@@ -157,8 +157,8 @@ def process_item(item,metricName,op,thresholds):
 				for threshold in thresholds.iter("threshold"):
 					thresholdOperator = threshold.find("comparison-operator").text
 					if thresholdOperator == CONFIG_NE_OPERATOR:
-						delete_alarm(alarmName=metricName)
-						delete_alarm(alarmName=metricName)						
+						delete_alarm(alarmName=metricName+"-hi")
+						delete_alarm(alarmName=metricName+"-lo")						
 					elif thresholdOperator == CONFIG_GT_OPERATOR:
 						delete_alarm(alarmName=metricName)
 					elif thresholdOperator == CONFIG_LT_OPERATOR:
