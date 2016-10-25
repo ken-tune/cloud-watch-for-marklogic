@@ -14,7 +14,9 @@ parser = optparse.OptionParser()
 parser.set_defaults(debug=False)
 parser.set_defaults(setAlarm=False)
 parser.add_option('--debug',action="store_true",dest='debug')
+parser.add_option('--storeMetrics',action="store_true",dest='storeMetrics')
 parser.add_option('--setAlarm',action="store_true",dest='setAlarm')
+parser.add_option('--deleteAlarm',action="store_true",dest='deleteAlarm')
 (options, args) = parser.parse_args()
 
 # Constants
@@ -131,11 +133,11 @@ def process_item(item,metricName,op,thresholds):
                 value=str(item)
 	value = processValue(value,op)
 	if isinstance(value,int) or is_numeric(value):
-		if not options.setAlarm:
+		if options.storeMetrics:
 			print "Inserting name:"+metricName+" unit:"+unit+" value:"+str(value)
 			if not options.debug:			
 				cwc.put_metric_data(namespace=SERVER_NAME,name=metricName,unit=unit,value=value)			
-		else:
+		if options.setAlarm:
 			if thresholds is not None:
 				for threshold in thresholds.iter("threshold"):
 					thresholdType = threshold.find("type").text
@@ -150,6 +152,15 @@ def process_item(item,metricName,op,thresholds):
 						set_alarm(name=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
 					elif thresholdOperator == CONFIG_LT_OPERATOR:
 						set_alarm(name=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
+		if options.deleteAlaram
+					if thresholdOperator == CONFIG_NE_OPERATOR:
+						delete_alarm(name=metricName)
+						delete_alarm(name=metricName)						
+					elif thresholdOperator == CONFIG_GT_OPERATOR:
+						delete_alarm(name=metricName)
+					elif thresholdOperator == CONFIG_LT_OPERATOR:
+						delete_alarm(name=metricName)
+
 	else:
 		print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(value)
 
@@ -208,6 +219,11 @@ def set_alarm(name,thresholdValue,unit,thresholds,operator):
 			threshold=thresholdValue,
 			comparison=operator
 		))
+
+def delete_alarm(alarmName):
+	print "Deleting alarm "+alarmName
+	if not options.debug:
+		cwc.delete_alarms(alarmName)
 
 e = xml.etree.ElementTree.parse('metrics.xml').getroot()
 
