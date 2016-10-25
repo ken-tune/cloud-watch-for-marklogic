@@ -177,6 +177,7 @@
       <collection-lexicon>true</collection-lexicon>
       <directory-creation>manual</directory-creation>
       <maintain-last-modified>false</maintain-last-modified>
+      <in-memory-range-index-size>16</in-memory-range-index-size>
 <!--
       <fragment-roots>
         <fragment-root>
