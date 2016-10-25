@@ -197,7 +197,10 @@ def get_data(path,desc,key,id,idName,op,thresholds):
 			print "XXX - " + key + " not found"				
 
 def set_alarm(metricName,thresholdValue,unit,thresholds,operator):	
-	print "put-metric-alarm(alarm-name="+metricName+ \
+	set_alarm(metricName,metricName,thresholdValue,unit,thresholds,operator)
+
+def set_alarm(alarmName,metricName,thresholdValue,unit,thresholds,operator):	
+	print "put-metric-alarm(alarm-name="+alarmName+ \
 	",alarm-description="+metricName+\
 	",metric-name="+metricName+\
 	",namespace="+SERVER_NAME+\
