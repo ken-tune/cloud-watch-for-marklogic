@@ -119,7 +119,7 @@
     <service_note>State of the database</service_note>
     <path>/manage/v2/databases/$_HOSTMLALIAS$?view=status</path>
     <key>$SERVICEDESC$</key>
-    <op>ne=unavailable</op>
+    <op>eq=unavailable</op>
     <thresholds>
         <!-- means db is unavailable -->
         <threshold>
@@ -264,7 +264,7 @@
         <threshold>
           <type>critical</type>
           <comparison-operator>gt</comparison-operator>
-          <value>0</value>
+          <value>#CURRENT_VALUE#</value>
         </threshold>
     </thresholds>            
   </metric>
