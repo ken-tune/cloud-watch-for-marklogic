@@ -146,12 +146,12 @@ def process_item(item,metricName,op,thresholds):
 					if thresholdValue == CURRENT_VALUE_INSTRUCTION:
 						thresholdValue = value
 					if thresholdOperator == CONFIG_NE_OPERATOR:
-						set_alarm(metricName=metricName+"-hi",thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
-						set_alarm(metricName=metricName+"-lo",thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
+						set_alarm(alarmName=metricName+"-hi",metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
+						set_alarm(alarmName=metricName+"-lo",metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
 					elif thresholdOperator == CONFIG_GT_OPERATOR:
-						set_alarm(metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
+						set_alarm(alarmName=metricName,metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
 					elif thresholdOperator == CONFIG_LT_OPERATOR:
-						set_alarm(metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
+						set_alarm(alarmName=metricName,metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
 		if options.deleteAlarm:
 			if thresholds is not None:
 				for threshold in thresholds.iter("threshold"):
@@ -195,9 +195,6 @@ def get_data(path,desc,key,id,idName,op,thresholds):
 
 	if len(list(gen_dict_extract(key,json))) ==0:
 			print "XXX - " + key + " not found"				
-
-def set_alarm(metricName,thresholdValue,unit,thresholds,operator):	
-	set_alarm(metricName,metricName,thresholdValue,unit,thresholds,operator)
 
 def set_alarm(alarmName,metricName,thresholdValue,unit,thresholds,operator):	
 	print "put-metric-alarm(alarm-name="+alarmName+ \
