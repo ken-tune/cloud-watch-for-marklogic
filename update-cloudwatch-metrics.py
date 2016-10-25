@@ -1,5 +1,6 @@
 import boto
 from boto.ec2.cloudwatch import CloudWatchConnection
+from boto.ec2.cloudwatch.alarm import MetricAlarm
 
 import requests
 from requests.auth import HTTPDigestAuth
@@ -23,8 +24,8 @@ SERVER_TYPE="Servers"
 CONFIG_NE_OPERATOR="ne"
 CONFIG_GT_OPERATOR="gt"
 CONFIG_LT_OPERATOR="lt"
-AWS_LT_OPERATOR="LessThanThreshold"
-AWS_GT_OPERATOR="GreaterThanThreshold"
+AWS_LT_OPERATOR="<"
+AWS_GT_OPERATOR=">"
 
 # Application specific configuration
 import config
@@ -194,19 +195,19 @@ def set_alarm(name,thresholdValue,unit,thresholds,operator):
 	",alarm-actions="+config.SNS_TOPIC+\
 	",unit="+unit
 	if not options.debug:
-		cwc.put_metric_alarm(
-			AlarmName=name,
-			AlarmDescription=name,
-			AlarmActions=config.SNS_TOPIC,
-			MetricName=name,
-			NameSpace=SERVER_NAME,
-			Statistic="Average",
-			Period=120,
-			Unit=unit,
-			EvaluationPeriods=1,
-			Threshold=thresholdValue,
-			ComparisonOperator=operator
-		)
+		cwc.put_metric_alarm(MetricAlarm(
+			name=name,
+			description=name,
+			alarm_actions=config.SNS_TOPIC,
+			metric=name,
+			namespace=SERVER_NAME,
+			statistic="Average",
+			period=120,
+			unit=unit,
+			evaluation_periods=1,
+			threshold=thresholdValue,
+			comparison=operator
+		))
 
 e = xml.etree.ElementTree.parse('metrics.xml').getroot()
 
