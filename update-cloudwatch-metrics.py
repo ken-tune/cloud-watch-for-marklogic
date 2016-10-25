@@ -193,7 +193,20 @@ def set_alarm(name,thresholdValue,unit,thresholds,operator):
 	",evaluation-periods=1"+\
 	",alarm-actions="+config.SNS_TOPIC+\
 	",unit="+unit
-
+	if not options.debug:
+		cwc.put_metric_alarm(
+			AlarmName=name,
+			AlarmDescription=name,
+			AlarmActions=config.SNS_TOPIC,
+			MetricName=name,
+			NameSpace=SERVER_NAME,
+			Statistic="Average",
+			Period=120,
+			Unit=unit,
+			EvaluationPeriods=1,
+			Threshold=thresholdValue,
+			ComparisonOperator=operator
+		)
 
 e = xml.etree.ElementTree.parse('metrics.xml').getroot()
 
