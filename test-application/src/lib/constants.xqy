@@ -10,3 +10,4 @@ declare variable $MAX-DOCUMENTS-RETURNED := 10;
 declare variable $MIN-DOCUMENTS-INSERTED := 1;
 declare variable $MAX-DOCUMENTS-INSERTED := 10;
 
+declare variable $CLEAR-CACHE-FREQUENCY := 40;
