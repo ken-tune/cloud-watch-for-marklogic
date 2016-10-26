@@ -69,7 +69,7 @@
   <metric type="Servers">
     <service_description>total-requests</service_description>
     <service_note>Count of total requests</service_note>
-    <path>/manage/v2/requests?server-id=$_HOSTMLALIAS$&amp;seconds-min=60</path>
+    <path>/manage/v2/servers/$_HOSTMLALIAS$?view=status</path>
     <key>$SERVICEDESC$</key>
     <thresholds>
         <threshold>
