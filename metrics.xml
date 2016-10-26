@@ -85,19 +85,19 @@
     </thresholds>            
   </metric>
   <metric type="Servers">
-    <service_description>request-rate</service_description>
+    <service_description>total-request-rate</service_description>
     <service_note>Request rate</service_note>
     <path>/manage/v2/servers/$_HOSTMLALIAS$?view=status</path>
     <key>$SERVICEDESC$</key>
   </metric>
   <metric type="Servers">
-    <service_description>expanded-tree-cache-hits</service_description>
+    <service_description>total-expanded-tree-cache-hit-rate</service_description>
     <service_note>Expanded Tree Cache Hit Rate</service_note>
     <path>/manage/v2/servers/$_HOSTMLALIAS$?view=status</path>
     <key>$SERVICEDESC$</key>
   </metric>
   <metric type="Servers">
-    <service_description>expanded-tree-cache-misses</service_description>
+    <service_description>total-expanded-tree-cache-miss-rate</service_description>
     <service_note>Expanded Tree Cache Miss Rate</service_note>
     <path>/manage/v2/servers/$_HOSTMLALIAS$?view=status</path>
     <key>$SERVICEDESC$</key>
