@@ -169,7 +169,7 @@ def process_item(item,metricName,op,thresholds):
 
 def get_data(path,desc,key,id,idName,op,thresholds):
 	path = re.sub("\$OBJECT_ID\$",str(id),path)
-	key = re.sub("\$SERVICEDESC\$",desc,key)
+	key = re.sub("\$SERVICE_DESCRIPTION\$",desc,key)
 
 	url = urlPrefix() +path
 	if "?" in url:
