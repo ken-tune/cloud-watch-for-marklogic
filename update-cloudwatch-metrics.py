@@ -168,7 +168,7 @@ def process_item(item,metricName,op,thresholds):
 		print "Not numeric :"+metricName+" unit:"+unit+" value:"+str(value)
 
 def get_data(path,desc,key,id,idName,op,thresholds):
-	path = re.sub("\$_HOSTMLALIAS\$",str(id),path)
+	path = re.sub("\$OBJECT_ID\$",str(id),path)
 	key = re.sub("\$SERVICEDESC\$",desc,key)
 
 	url = urlPrefix() +path
