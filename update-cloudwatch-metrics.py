@@ -302,6 +302,15 @@ def check_sns_topic_exists(topicName):
 		print "SNS topic for "+topicName+" exists"		    	
 	return sns_arn
 
+def delete_topic(topicName):
+	snsConn=SNSConnection()
+	sns_arn=sns_arn_for_topic(topicName)
+	if(sns_arn == None):
+		print "No SNS topic yet for "+topicName+" found"
+	else:
+		print "Deleting SNS topic for "+topicName		    	
+		snsConn.delete_topic(sns_arn)		
+
 def check_subscription_exists(topicName,email):
 	snsConn=SNSConnection()	
 	topicARN=check_sns_topic_exists(topicName)
@@ -313,8 +322,11 @@ def check_subscription_exists(topicName,email):
 		print "Subscribing "+email+" to topic "+topicName
 		snsConn.subscribe(topicARN,EMAIL_PROTOCOL,email)	
 
-check_subscription_exists(config.SERVER_NAME,config.EMAIL_FOR_SNS)
-quit()
+if(options.setAlarm):
+	check_subscription_exists(config.SERVER_NAME,config.EMAIL_FOR_SNS)
+if(options.deleteAlarm):
+	delete_topic(config.SERVER_NAME)
+
 
 # Cloud Watch Connection object
 cwc = CloudWatchConnection()
