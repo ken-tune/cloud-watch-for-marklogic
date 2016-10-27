@@ -297,7 +297,7 @@ def check_sns_topic_exists(topicName):
 	sns_arn - sns_arn_for_topic(topicName)
 	if(sns_arn == None):
 		print "No SNS topic yet for "+topicName+" - creating"
-    sns_arn=str(snsConn.create_topic(topicName)["CreateTopicResponse"]["CreateTopicResult"]["TopicArn"])
+		sns_arn=str(snsConn.create_topic(topicName)["CreateTopicResponse"]["CreateTopicResult"]["TopicArn"])
 	else:
 		print "SNS topic for "+topicName+" exists"		    	
 	return sns_arn
