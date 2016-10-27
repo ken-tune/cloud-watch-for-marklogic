@@ -183,8 +183,9 @@ def process_item(item,metricName,op,thresholds):
 						set_alarm(alarmName=alarmName,metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_GT_OPERATOR)
 					elif thresholdOperator == CONFIG_LT_OPERATOR:
 						set_alarm(alarmName=alarmName,metricName=metricName,thresholdValue=thresholdValue,unit=unit,thresholds=thresholds,operator=AWS_LT_OPERATOR)						
+			# Do Nothing						
 			else:
-				print "*** No threshold found for metric :"+metricName+ " - cannot set alarm ***"
+				0
 		# If deleteAlarm flag set				
 		if options.deleteAlarm:
 			if thresholds is not None:
