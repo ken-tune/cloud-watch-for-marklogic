@@ -336,7 +336,7 @@ sns_arn = None
 if(options.setAlarm):
 	check_subscription_exists(config.SERVER_NAME,config.EMAIL_FOR_SNS)
 	# and store he SNS ARN for further use
-	sns_arn = sns_arn_for_topic()	
+	sns_arn = sns_arn_for_topic(config.SERVER_NAME)	
 # Remove topic if deleting alarms	
 if(options.deleteAlarm):
 	delete_topic(config.SERVER_NAME)
