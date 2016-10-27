@@ -236,12 +236,12 @@ def processMetric(path,metricName,key,id,idName,op,thresholds,objectType):
 				process_item(item,metricName,op,thresholds)
 			# If it's not of the form {units:, value: } then we iterate through each key/object pair until we get to {units:,value:} and process that
 			else:			
-				for desc in item:
-					sub_item= item[desc]
-					process_item(sub_item,desc,op,thresholds)
+				for itemKey in item:
+					sub_item= item[itemKey]
+					process_item(sub_item,itemKey,op,thresholds)
 		# If not then item is a scalar - package in {unit:,value} form and process
 		else:
-			process_item({"value":item,"units":"Count"},desc,op,thresholds)
+			process_item({"value":item,"units":"Count"},metricName,op,thresholds)
 
 	if len(list(gen_dict_extract(key,json))) ==0:
 			print "*** - " + key + " not found - skipping this metric ***"				
