@@ -5,6 +5,7 @@
 import boto
 from boto.ec2.cloudwatch import CloudWatchConnection
 from boto.ec2.cloudwatch.alarm import MetricAlarm
+from boto.sns import SNSConnection
 
 import requests
 from requests.auth import HTTPDigestAuth
@@ -34,6 +35,7 @@ CONFIG_LT_OPERATOR="lt"
 # Strings used for alarm specification
 AWS_LT_OPERATOR="<"
 AWS_GT_OPERATOR=">"
+EMAIL_PROTOCOL="email"
 
 # Translate our units into AWS units
 unitTranslation = {
@@ -279,6 +281,40 @@ def delete_alarm(alarmName):
 	print "Deleting alarm "+alarmName
 	if not options.debug:
 		cwc.delete_alarms(alarmName)
+
+
+def sns_arn_for_topic(topicName)
+	snsConn=SNSConnection()
+	all_topics=snsConn.get_all_topics()["ListTopicsResponse"]["ListTopicsResult"]["Topics"]
+	matchingTopics=[x for x in all_topics if x["TopicArn"].endswith(":"+topicName)]
+	topicARN=None
+	if(len(matchingTopics)):
+    topicARN=matchingTopic=matchingTopics[0]["TopicArn"]
+	return topicARN
+
+def check_sns_topic_exists(topicName)
+	snsConn=SNSConnection()
+	sns_arn - sns_arn_for_topic(topicName)
+	if(sns_arn == None):
+		print "No SNS topic yet for "+topicName+" - creating"
+    sns_arn=str(snsConn.create_topic(topicName)["CreateTopicResponse"]["CreateTopicResult"]["TopicArn"])
+	else:
+		print "SNS topic for "+topicName+" exists"		    	
+	return sns_arn
+
+def check_subscription_exists(topicName,email):
+	snsConn=SNSConnection()	
+	topicARN=check_sns_topic_exists(topicName)
+	subscriptions=snsConn.get_all_subscriptions_by_topic(topicARN,None)["ListSubscriptionsByTopicResponse"]["ListSubscriptionsByTopicResult"]["Subscriptions"]
+	matching_subscriptions=[x for x in subscriptions if(x["Protocol"]==EMAIL_PROTOCOL and x["Endpoint"]==email)]
+	if(len(matching_subscriptions)):
+    print email+" is subscribed to topic "+topicName+" already"
+	else:
+  	print "Subscribing "+EMAIL+" to topic "+topicName
+   	snsConn.subscribe(topicARN,PROTOCOL,email)	
+
+check_subscription_exists(config.SERVER_NAME,config.EMAIL_FOR_SNS)
+quit()
 
 # Cloud Watch Connection object
 cwc = CloudWatchConnection()
