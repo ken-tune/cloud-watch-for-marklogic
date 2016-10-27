@@ -310,7 +310,7 @@ def check_subscription_exists(topicName,email):
 	if(len(matching_subscriptions)):
 		print email+" is subscribed to topic "+topicName+" already"
 	else:
-		print "Subscribing "+EMAIL+" to topic "+topicName
+		print "Subscribing "+email+" to topic "+topicName
 		snsConn.subscribe(topicARN,PROTOCOL,email)	
 
 check_subscription_exists(config.SERVER_NAME,config.EMAIL_FOR_SNS)
