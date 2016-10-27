@@ -334,6 +334,9 @@ cwc = CloudWatchConnection()
 sns_arn = None
 # If setting alarm, set up a topic whose name is the server name
 if(options.setAlarm):
+	if(config.EMAIL_FOR_SNS=="youremail@yourdomain.com"):
+		print "You haven't set EMAIL_FOR_SNS in config.py - can't set up alarms before you do"
+		quit();
 	check_subscription_exists(config.SERVER_NAME,config.EMAIL_FOR_SNS)
 	# and store he SNS ARN for further use
 	sns_arn = sns_arn_for_topic(config.SERVER_NAME)	
