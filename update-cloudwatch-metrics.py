@@ -259,13 +259,13 @@ def set_alarm(alarmName,metricName,thresholdValue,unit,thresholds,operator):
 	"threshold="+thresholdValue+\
 	"comparison-operator="+operator+\
 	",evaluation-periods=1"+\
-	",alarm-actions="+config.SNS_TOPIC+\
+	",alarm-actions="+sns_arn+\
 	",unit="+unit
 	if not options.debug:
 		cwc.put_metric_alarm(MetricAlarm(
 			name=alarmName,
 			description=metricName,
-			alarm_actions=config.SNS_TOPIC,
+			alarm_actions=sns_arn,
 			metric=metricName,
 			namespace=config.SERVER_NAME,
 			statistic="Average",
@@ -283,6 +283,7 @@ def delete_alarm(alarmName):
 		cwc.delete_alarms(alarmName)
 
 
+# Return ARN for a given topic name, if it exists
 def sns_arn_for_topic(topicName):
 	snsConn=SNSConnection()
 	all_topics=snsConn.get_all_topics()["ListTopicsResponse"]["ListTopicsResult"]["Topics"]
@@ -292,6 +293,7 @@ def sns_arn_for_topic(topicName):
 		topicARN=matchingTopics[0]["TopicArn"]
 	return topicARN
 
+# Get ARN for topic, and create one if needed
 def check_sns_topic_exists(topicName):
 	snsConn=SNSConnection()
 	sns_arn=sns_arn_for_topic(topicName)
@@ -302,6 +304,7 @@ def check_sns_topic_exists(topicName):
 		print "SNS topic for "+topicName+" exists"		    	
 	return sns_arn
 
+# Delete topic
 def delete_topic(topicName):
 	snsConn=SNSConnection()
 	sns_arn=sns_arn_for_topic(topicName)
@@ -311,6 +314,7 @@ def delete_topic(topicName):
 		print "Deleting SNS topic for "+topicName		    	
 		snsConn.delete_topic(sns_arn)		
 
+# Subscribe email to topic if needed
 def check_subscription_exists(topicName,email):
 	snsConn=SNSConnection()	
 	topicARN=check_sns_topic_exists(topicName)
@@ -322,14 +326,21 @@ def check_subscription_exists(topicName,email):
 		print "Subscribing "+email+" to topic "+topicName
 		snsConn.subscribe(topicARN,EMAIL_PROTOCOL,email)	
 
-if(options.setAlarm):
-	check_subscription_exists(config.SERVER_NAME,config.EMAIL_FOR_SNS)
-if(options.deleteAlarm):
-	delete_topic(config.SERVER_NAME)
-
 
 # Cloud Watch Connection object
 cwc = CloudWatchConnection()
+
+
+sns_arn = None
+# If setting alarm, set up a topic whose name is the server name
+if(options.setAlarm):
+	check_subscription_exists(config.SERVER_NAME,config.EMAIL_FOR_SNS)
+	# and store he SNS ARN for further use
+	sns_arn = sns_arn_for_topic()	
+# Remove topic if deleting alarms	
+if(options.deleteAlarm):
+	delete_topic(config.SERVER_NAME)
+
 
 # Parse the metrics file
 e = xml.etree.ElementTree.parse(CONFIG_FILE).getroot()
