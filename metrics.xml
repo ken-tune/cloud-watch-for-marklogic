@@ -119,13 +119,13 @@
     <service_note>State of the database</service_note>
     <path>/manage/v2/databases/$OBJECT_ID$?view=status</path>
     <key>$SERVICE_DESCRIPTION$</key>
-    <op>eq=unavailable</op>
+    <op>eq=available</op>
     <thresholds>
         <!-- means db is unavailable -->
         <threshold>
           <type>critical</type>
-          <comparison-operator>gt</comparison-operator>
-          <value>0</value>
+          <comparison-operator>lt</comparison-operator>
+          <value>1</value>
         </threshold>
     </thresholds>            
   </metric>
@@ -356,3 +356,4 @@
     <key>$SERVICE_DESCRIPTION$</key>
   </metric>
 </metrics>
+  
