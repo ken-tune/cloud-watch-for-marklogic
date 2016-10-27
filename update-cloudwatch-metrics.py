@@ -289,7 +289,7 @@ def sns_arn_for_topic(topicName):
 	matchingTopics=[x for x in all_topics if x["TopicArn"].endswith(":"+topicName)]
 	topicARN=None
 	if(len(matchingTopics)):
-    topicARN=matchingTopic=matchingTopics[0]["TopicArn"]
+		topicARN=matchingTopics[0]["TopicArn"]
 	return topicARN
 
 def check_sns_topic_exists(topicName):
