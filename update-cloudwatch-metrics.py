@@ -283,7 +283,7 @@ def delete_alarm(alarmName):
 		cwc.delete_alarms(alarmName)
 
 
-def sns_arn_for_topic(topicName)
+def sns_arn_for_topic(topicName):
 	snsConn=SNSConnection()
 	all_topics=snsConn.get_all_topics()["ListTopicsResponse"]["ListTopicsResult"]["Topics"]
 	matchingTopics=[x for x in all_topics if x["TopicArn"].endswith(":"+topicName)]
@@ -292,7 +292,7 @@ def sns_arn_for_topic(topicName)
     topicARN=matchingTopic=matchingTopics[0]["TopicArn"]
 	return topicARN
 
-def check_sns_topic_exists(topicName)
+def check_sns_topic_exists(topicName):
 	snsConn=SNSConnection()
 	sns_arn - sns_arn_for_topic(topicName)
 	if(sns_arn == None):
