@@ -308,7 +308,7 @@ def check_subscription_exists(topicName,email):
 	subscriptions=snsConn.get_all_subscriptions_by_topic(topicARN,None)["ListSubscriptionsByTopicResponse"]["ListSubscriptionsByTopicResult"]["Subscriptions"]
 	matching_subscriptions=[x for x in subscriptions if(x["Protocol"]==EMAIL_PROTOCOL and x["Endpoint"]==email)]
 	if(len(matching_subscriptions)):
-    print email+" is subscribed to topic "+topicName+" already"
+		print email+" is subscribed to topic "+topicName+" already"
 	else:
   	print "Subscribing "+EMAIL+" to topic "+topicName
    	snsConn.subscribe(topicARN,PROTOCOL,email)	
