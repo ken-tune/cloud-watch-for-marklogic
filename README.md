@@ -90,3 +90,7 @@ Metrics and thresholds for alarms may be found in the file *metrics.xml* which i
 ### Debugging
 
 Run *python update-cloudwatch-metrics.py* with the --debug flag set and it will tell you what it's doing without actually doing it. In particular, run with the --setMetrics flag to see what values are being stored. *crontab -l* will show you that this is the flag used by the cron job.
+
+### System Metrics
+
+This package monitors MarkLogic metrics only. For infrastructure metrics such as memory usage consider using http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/mon-scripts.html or other web resources.
