@@ -35,7 +35,7 @@ Configure as follows
 **HOST** - MarkLogic host that will be used to access server metrics. If running these scripts on a host in the cluster, *localhost* is fine  
 **SERVER_NAME** - Name of the *application* server you would like to monitor  
 **SERVER_DATABASE** - Name of the *database* you would like to monitor  
-**EMAIL_FOR_SNS** - When setting alarms up, *update-cloudwatch-metrics.py* creates an [SNS topic](https://aws.amazon.com/sns/) with name *SERVER_NAME* and subscribes *this address* to it. So configure with the address you would like alerts sent to. ** Note that **this address** will get a confirmation email from AWS which must be responded to if you want to receive alerts**
+**EMAIL_FOR_SNS** - When setting alarms up, *update-cloudwatch-metrics.py* creates an [SNS topic](https://aws.amazon.com/sns/) with name *SERVER_NAME* and subscribes *this address* to it. So configure with the address you would like alerts sent to. **Note that *this address* will get a confirmation email from AWS which must be responded to if you want to receive alerts**
 
 Shipped config can be used without modification with the demonstration application below. You will need to create your own monitoring user if not.
 
