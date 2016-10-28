@@ -432,6 +432,7 @@
       <role-name>${app-role}</role-name>
       <description>A role for users of the ${app-name} application</description>
       <role-names>
+        <role-name>rest-extension-user</role-name>
       </role-names>
       <permissions>
         <permission>
@@ -455,6 +456,12 @@
       </collections>
       <privileges>
         <privilege>
+          <privilege-name>rest-reader</privilege-name>
+        </privilege>        
+        <privilege>
+          <privilege-name>rest-writer</privilege-name>
+        </privilege>                
+        <privilege>
           <privilege-name>xdmp:value</privilege-name>
         </privilege>
         <privilege>
@@ -466,6 +473,15 @@
         <privilege>
           <privilege-name>xdmp:with-namespaces</privilege-name>
         </privilege>
+        <privilege>
+          <privilege-name>xdmp:get-server-field</privilege-name>
+        </privilege>        
+        <privilege>
+          <privilege-name>unprotected-uri</privilege-name>
+        </privilege>        
+        <privilege>
+          <privilege-name>unprotected-collections</privilege-name>
+        </privilege>        
       </privileges>
     </role>
   </roles>
@@ -473,7 +489,7 @@
     <user>
       <user-name>${app-name}-user</user-name>
       <description>A user for the ${app-name} application</description>
-      <password>${appuser-password}</password>
+      <password>${app-name}-user</password>
       <role-names>
         <role-name>${app-role}</role-name>
       </role-names>

@@ -14,7 +14,7 @@ declare function insert-random-document(){
   let $url := $RANDOM-DOCUMENT-DIRECTORY||xdmp:md5(xs:string(xdmp:random()))||".xml"
   return
   (
-    xdmp:document-insert($url,create-random-document(),(),$RANDOM-DOCUMENT-COLLECTION),
+    xdmp:document-insert($url,create-random-document(),xdmp:default-permissions(),$RANDOM-DOCUMENT-COLLECTION),
     $url
   )    
 };
