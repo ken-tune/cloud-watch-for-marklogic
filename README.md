@@ -81,7 +81,7 @@ This must be pro-rated in some way in that I've created hundreds of custom metri
 
 ### Unavailable metrics
 
-If you don't have replica forests or aren't using database replication some metrics won't be available. Cloudwatch For MarkLogic won't try and store metrics that don't exist and won't set alarms that don't exist. The flip side is that if you do bring these things online, re-run *python update-cloudwatch-metrics.py --setAlarm* so alarms get configured. Also don't run --setAlarm **before** you install your app otherwise most things will be unavailable.
+If you don't have replica forests or aren't using database replication some metrics won't be available. Cloudwatch For MarkLogic won't try and store metrics that don't exist and won't set alarms on metrics that don't exist. The flip side is that if you do bring these things online, re-run *python update-cloudwatch-metrics.py --setAlarm* so alarms get configured. Also don't run --setAlarm **before** you install your app otherwise most things will be unavailable.
 
 ### Your mileage may vary
 
@@ -94,3 +94,7 @@ Run *python update-cloudwatch-metrics.py* with the --debug flag set and it will 
 ### System Metrics
 
 This package monitors MarkLogic metrics only. For infrastructure metrics such as memory usage consider using http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/mon-scripts.html or other web resources.
+
+### Other
+
+Port 8006 is chosen for the demo application as the MarkLogic CloudFormation templates allow port forwarding of ports 8000 - 8010 from Elastic Load Balancer to MarkLogic cluster hosts. For ease, the sample application port is therefore placed within this range.
