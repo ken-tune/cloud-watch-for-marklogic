@@ -496,6 +496,16 @@
       <permissions/>
       <collections/>
     </user>
+    <user>
+      <user-name>cloudwatch-monitoring-user</user-name>
+      <description>User with monitoring permissions</description>
+      <password>cloudwatch-monitoring-user</password>
+      <role-names>
+        <role-name>manage-user</role-name>
+      </role-names>
+      <permissions/>
+      <collections/>
+    </user>    
   </users>
   <amps xmlns="http://marklogic.com/xdmp/security">
 <!--

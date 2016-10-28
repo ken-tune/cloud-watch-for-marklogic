@@ -1,5 +1,5 @@
-USER="admin"
-PASSWORD="admin"
+USER="cloudwatch-monitoring-user"
+PASSWORD="cloudwatch-monitoring-user"
 HOST="localhost"
 SERVER_NAME="cloudwatch-demo-rest"
 SERVER_DATABASE="cloudwatch-demo-content"
