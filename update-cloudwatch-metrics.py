@@ -286,7 +286,6 @@ def delete_alarm(alarmName):
 
 # Return ARN for a given topic name, if it exists
 def sns_arn_for_topic(topicName):
-	snsConn=SNSConnection()
 	all_topics=snsConn.get_all_topics()["ListTopicsResponse"]["ListTopicsResult"]["Topics"]
 	matchingTopics=[x for x in all_topics if x["TopicArn"].endswith(":"+topicName)]
 	topicARN=None
@@ -296,7 +295,6 @@ def sns_arn_for_topic(topicName):
 
 # Get ARN for topic, and create one if needed
 def check_sns_topic_exists(topicName):
-	snsConn=SNSConnection()
 	sns_arn=sns_arn_for_topic(topicName)
 	if(sns_arn == None):
 		print "No SNS topic yet for "+topicName+" - creating"
@@ -307,7 +305,6 @@ def check_sns_topic_exists(topicName):
 
 # Delete topic
 def delete_topic(topicName):
-	snsConn=SNSConnection()
 	sns_arn=sns_arn_for_topic(topicName)
 	if(sns_arn == None):
 		print "No SNS topic yet for "+topicName+" found"
@@ -317,7 +314,6 @@ def delete_topic(topicName):
 
 # Subscribe email to topic if needed
 def check_subscription_exists(topicName,email):
-	snsConn=SNSConnection()	
 	topicARN=check_sns_topic_exists(topicName)
 	subscriptions=snsConn.get_all_subscriptions_by_topic(topicARN,None)["ListSubscriptionsByTopicResponse"]["ListSubscriptionsByTopicResult"]["Subscriptions"]
 	matching_subscriptions=[x for x in subscriptions if(x["Protocol"]==EMAIL_PROTOCOL and x["Endpoint"]==email)]
@@ -329,8 +325,8 @@ def check_subscription_exists(topicName,email):
 
 
 # Cloud Watch Connection object
-cwc = CloudWatchConnection()
-
+cwc =  boto.sns.connect_to_region(config.AWS_REGION)
+snsConn = boto.sns.connect_to_region(config.AWS_REGION)
 
 sns_arn = None
 # If setting alarm, set up a topic whose name is the server name
