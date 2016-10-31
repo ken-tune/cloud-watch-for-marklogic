@@ -26,6 +26,7 @@ HOST="localhost"
 SERVER_NAME="cloudwatch-demo-rest"
 SERVER_DATABASE="cloudwatch-demo-content"
 EMAIL_FOR_SNS="youremail@yourdomain.com"
+AWS_REGION="us-east-1"
 ```
 
 Configure as follows
@@ -36,6 +37,7 @@ Configure as follows
 **SERVER_NAME** - Name of the *application* server you would like to monitor  
 **SERVER_DATABASE** - Name of the *database* you would like to monitor  
 **EMAIL_FOR_SNS** - When setting alarms up, *update-cloudwatch-metrics.py* creates an [SNS topic](https://aws.amazon.com/sns/) with name *SERVER_NAME* and subscribes *this address* to it. So configure with the address you would like alerts sent to. **Note that *this address* will get a confirmation email from AWS which must be responded to if you want to receive alerts**
+**AWS_REGION** - Name of the AWS region your application is in ( e.g. us-east-1/us-east-2/us-west-1/us-west-2/eu-west-1/eu-central-1 )
 
 Shipped config can be used without modification with the demonstration application below. You will need to create your own monitoring user if not.
 
