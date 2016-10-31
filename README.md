@@ -9,7 +9,7 @@ The ideal setup would use the standard MarkLogic AMI, which is built on AWS Linu
 On any host in your cluster
 
 * *sudo yum -y install git*
-* *git clone git@github.com:mustard57/cloud-watch-for-marklogic.git*
+* *git clone git@github.com:ken-tune/cloud-watch-for-marklogic.git*
 * *cd cloud-watch-for-marklogic*
 * Modify your settings in *config.py* ( see below )
 * *./cronCloudWatchUpdate.sh* ( adds metric storing as a cron job )
