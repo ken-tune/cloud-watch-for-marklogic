@@ -65,9 +65,12 @@ parser.add_option('--setAlarm',action="store_true",dest='setAlarm')
 parser.add_option('--deleteAlarm',action="store_true",dest='deleteAlarm')
 (options, args) = parser.parse_args()
 
-#
+# Get an SNS Connection for selected region
 def getSNSConn():
     return boto.sns.connect_to_region(config.AWS_REGION)
+
+def check_region(regionName):
+    return regionName in [x.name for x in boto.ec2.regions()]
 
 # Utility function to check if string is numeric
 def is_numeric(_string):
@@ -331,6 +334,10 @@ def check_subscription_exists(topicName,email):
 		print "Subscribing "+email+" to topic "+topicName
 		snsConn.subscribe(topicARN,EMAIL_PROTOCOL,email)	
 
+# Check Region
+if(not(check_region(config.AWS_REGION))):
+    print config.AWS_REGION + " in config.py is not a valid AWS region - please fix"
+    quit()
 
 # Cloud Watch Connection object
 cwc = boto.ec2.cloudwatch.connect_to_region(config.AWS_REGION)
