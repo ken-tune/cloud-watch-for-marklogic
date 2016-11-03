@@ -85,6 +85,42 @@
     </thresholds>            
   </metric>
   <metric type="Servers">
+    <service_description>max-seconds</service_description>
+    <service_note>Age of oldest query</service_note>
+    <path>/manage/v2/requests?server-id=$OBJECT_ID$</path>
+    <key>$SERVICE_DESCRIPTION$</key>
+    <thresholds>
+        <threshold>
+          <type>warning</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>10</value>
+        </threshold>      
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>30</value>
+        </threshold>
+    </thresholds>            
+  </metric>  
+  <metric type="Servers">
+    <service_description>median-seconds</service_description>
+    <service_note>Median query response time</service_note>
+    <path>/manage/v2/requests?server-id=$OBJECT_ID$</path>
+    <key>$SERVICE_DESCRIPTION$</key>
+    <thresholds>
+        <threshold>
+          <type>warning</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>5</value>
+        </threshold>      
+        <threshold>
+          <type>critical</type>
+          <comparison-operator>gt</comparison-operator>
+          <value>15</value>
+        </threshold>
+    </thresholds>            
+  </metric>    
+  <metric type="Servers">
     <service_description>total-request-rate</service_description>
     <service_note>Request rate</service_note>
     <path>/manage/v2/servers/$OBJECT_ID$?view=status</path>
@@ -115,10 +151,10 @@
     <key>$SERVICE_DESCRIPTION$</key>
   </metric>
   <metric type="Databases">
-    <service_description>state</service_description>
-    <service_note>State of the database</service_note>
+    <service_description>db-available</service_description>
+    <service_note>Database availability</service_note>
     <path>/manage/v2/databases/$OBJECT_ID$?view=status</path>
-    <key>$SERVICE_DESCRIPTION$</key>
+    <key>state</key>
     <op>eq=available</op>
     <thresholds>
         <!-- means db is unavailable -->
@@ -130,10 +166,10 @@
     </thresholds>            
   </metric>
   <metric type="Databases">
-    <service_description>failed-masters</service_description>
+    <service_description>failed-master-count</service_description>
     <service_note>Local Disk Failover (failed-masters)</service_note>
     <path>/manage/v2/databases/$OBJECT_ID$?view=status</path>
-    <key>$SERVICE_DESCRIPTION$</key>
+    <key>failed-masters</key>
     <thresholds>
         <threshold>
           <type>critical</type>
@@ -143,10 +179,10 @@
     </thresholds>            
   </metric>
   <metric type="Databases">
-    <service_description>async-replicating</service_description>
+    <service_description>async-replicating-count</service_description>
     <service_note>Local Disk Failover (async-replicating)</service_note>
     <path>/manage/v2/databases/$OBJECT_ID$?view=status</path>
-    <key>$SERVICE_DESCRIPTION$</key>
+    <key>async-replicating</key>
     <thresholds>
         <threshold>
           <type>critical</type>
@@ -202,10 +238,10 @@
     <key>$SERVICE_DESCRIPTION$</key>
   </metric>
   <metric type="Databases">
-    <service_description>documents</service_description>
+    <service_description>document-count</service_description>
     <service_note>Document count for attached forests (excluding replicas)</service_note>
     <path>/manage/v2/databases/$OBJECT_ID$?view=counts</path>
-    <key>$SERVICE_DESCRIPTION$</key>
+    <key>documents</key>
   </metric>
   <metric type="Databases">
     <service_description>list-cache-miss-rate</service_description>
@@ -238,10 +274,10 @@
     <key>$SERVICE_DESCRIPTION$</key>
   </metric>
   <metric type="Databases">
-    <service_description>data-size</service_description>
+    <service_description>db-size</service_description>
     <service_note>Total size of forest data on disk (MB)</service_note>
     <path>/manage/v2/databases/$OBJECT_ID$?view=status</path>
-    <key>$SERVICE_DESCRIPTION$</key>
+    <key>data-size</key>
   </metric>
   <metric type="Databases">
     <service_description>reindex-count</service_description>
@@ -256,10 +292,10 @@
     <key>$SERVICE_DESCRIPTION$</key>
   </metric>
   <metric type="Hosts">
-    <service_description>state-not-open</service_description>
+    <service_description>forests-not-open</service_description>
     <service_note>Count of non-open forests on host</service_note>
     <path>/manage/v2/forests?view=status&amp;host-id=$OBJECT_ID$</path>
-    <key>$SERVICE_DESCRIPTION$</key>
+    <key>state-not-open</key>
     <thresholds>
         <threshold>
           <type>critical</type>
@@ -287,15 +323,15 @@
     </thresholds>                
   </metric>
   <metric type="Hosts">
-    <service_description>min-capacity</service_description>
+    <service_description>min-disk-capacity-pct</service_description>
     <service_note>Capacity of the forest with the least available disk space</service_note>
     <path>/manage/v2/forests?view=status&amp;host-id=$OBJECT_ID$</path>
-    <key>$SERVICE_DESCRIPTION$</key>
+    <key>min-capacity</key>
     <thresholds>
         <threshold>
           <type>warning</type>
           <comparison-operator>lt</comparison-operator>
-          <value>15</value>
+          <value>30</value>
         </threshold>      
         <threshold>
           <type>critical</type>
@@ -305,10 +341,10 @@
     </thresholds>                    
   </metric>
   <metric type="Hosts">
-    <service_description>online</service_description>
+    <service_description>host-online</service_description>
     <service_note>Host is online/offline</service_note>
     <path>/manage/v2/hosts/$OBJECT_ID$?view=status</path>
-    <key>$SERVICE_DESCRIPTION$</key>
+    <key>online</key>
     <op>eq=true</op>
     <thresholds>
         <!-- means host is offline -->
