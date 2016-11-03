@@ -48,7 +48,8 @@ unitTranslation = {
 	"misses/sec":"Count/Second",
 	"quantity":"Count",
 	"quantity/sec":"Count/Second",
-	"sec/sec":"Count/Second"
+	"sec/sec":"Count/Second",
+	"sec":"Seconds"
 }
 
 # Parse command line options
