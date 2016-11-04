@@ -138,6 +138,10 @@ and I can take a look at this in the AWS Console
 
 <img style="width:100%;padding:5px" src="img/activated-alarm.png" alt="activated alarm"/>
 
+Now I've got some simulated data coming in I can also use CloudWatch to take a look at what's happening on my cluster. Here's some data on usage of the expanded tree cache
+
+<img style="width:100%;padding:5px" src="img/expanded-tree-cache-stats.png" alt="expanded tree cache stats"/>
+
 ## Wrap Up
 
 Hopefully this *HOWTO* helps you to see how easy it is to set this up. Have a look at *metrics.xml* to get a feel for what’s being monitored. Your needs may vary so if using for a production system, consider carefully the values used for the various thresholds. The project [README.md](https://github.com/ken-tune/cloud-watch-for-marklogic/blob/master/README.md) will talk you through how to tear down alarms – do this before shutting down if you’re just testing. Similar instructions are provided for tearing down the test project, and note, again, for a production system, you will need to change the handful of values in *config.py* as, as shipped, they relate to the test application.
