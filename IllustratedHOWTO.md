@@ -6,7 +6,7 @@ MarkLogic Server helps you via it’s [Monitoring API](http://docs.marklogic.com
 
 Finally you need something to tie things together. That’s where https://github.com/ken-tune/cloud-watch-for-marklogic comes in. A few straightforward steps will allow you to set up CloudWatch monitoring and alarms for your AWS cloud based MarkLogic app. 
 
-This blog goes through that process using a test application bundled alongside [cloud-watch-for-marklogic](https://github.com/ken-tune/cloud-watch-for-marklogic). We also use JMeter and a provided config file to simulate activity so’s we can get comfortable with the end result.
+This page goes through that process using a test application bundled alongside [cloud-watch-for-marklogic](https://github.com/ken-tune/cloud-watch-for-marklogic). We also use JMeter and a provided config file to simulate activity so’s we can get comfortable with the end result.
 
 ## AWS Cluster Setup using Cloud Formation Templates
 
