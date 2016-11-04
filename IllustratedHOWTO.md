@@ -10,7 +10,7 @@ This blog goes through that process using a test application bundled alongside [
 
 ## AWS Cluster Setup using Cloud Formation Templates
 
-If you haven’t got a cluster yet, it’s a snap to set one up using MarkLogic’s Cloud Formation templates (CFT). You can watch this [12 minute video](https://www.youtube.com/watch?v=nDPipDR7GSs) or you can follow the [documentation](http://docs.marklogic.com/guide/ec2/CloudFormation#id_25464). You’ll end up with something that looks like what’s below. Couple of useful tips – firstly do set up and use an SNS topic when creating your stack – it will help in case there are any difficulties. Secondly, if just experimenting, m3.medium, at (currently) $0.07 per hour is the lowest cost option and us-east1a/b/d are good choices of AZ – m3.medium is not available in us-east-1c. I used this [Cloud Formation Template](https://s3.amazonaws.com/marklogic-releases/8.0-6/ThreePlusCluster-BYOL.template).
+If you haven’t got a cluster yet, it’s a snap to set one up using MarkLogic’s Cloud Formation templates (CFT). You can watch this [12 minute video](https://www.youtube.com/watch?v=nDPipDR7GSs) or you can follow the [documentation](http://docs.marklogic.com/guide/ec2/CloudFormation#id_25464). You’ll end up with something that looks like what’s below. Couple of useful tips – firstly do set up and use an [SNS topic](https://aws.amazon.com/sns/) when creating your stack – it will help in case there are any difficulties. Secondly, if just experimenting, m3.medium, at (currently) $0.07 per hour is the lowest cost option and us-east1a/b/d are good choices of [AZ](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html) – m3.medium is not available in us-east-1c. I used this [Cloud Formation Template](https://s3.amazonaws.com/marklogic-releases/8.0-6/ThreePlusCluster-BYOL.template).
 
 <img style="width:100%;padding:5px" src="img/ml-cloud-formation-parameters.png" alt="cloud formation parameters"/>
 
@@ -34,7 +34,7 @@ so mine is called cloudwatc-ElasticL-1CM5JW6MWNUSD-108514967.us-east-1.elb.amazo
 
 In this section we set up the test application. This configures a REST server and a custom endpoint allowing randomized retrieval and storage of documents, resulting in a pseudo-realistic workload. You can find full details in the project's [README.md](https://github.com/ken-tune/cloud-watch-for-marklogic/blob/master/README.md#cloudwatch-demo)
 
-Log in to one of your hosts via ssh, so for me
+Log in to one of your hosts via ssh (see [Getting Started](http://docs.marklogic.com/guide/ec2/GettingStarted#id_24571) for key details), so for me
 
 *ssh ec2-user@ec2-54-91-130-220.compute-1.amazonaws.com*
 
@@ -46,14 +46,14 @@ Download ‘cloudwatch-for-marklogic’ - *git clone git@github.com:ken-tune/clo
 
 *cd cloudwatch-for-marklogic/test-application*
 
+Edit *deploy/local.properties* (screenshot below) - **user** and **password** should be the same as the values used for AdminUser/AdminPass in the CFT.
+
+<img style="width:50%;padding:5px" src="img/local.properties.png" alt="local.properties"/>
+
 Set up your application : *./doAll.sh*
 We’re on a three node cluster, so we can set up replica forests for failover
 
 *./ml local create_application_replica_forests* -	the existence of these gets monitored so let’s have those as well.
-
-Note that if your admin username and password as set in the CFT differ from admin/admin then you will need to amend the contents of *deploy/local.properties* **before** running the two steps above.
-
-<img style="width:50%;padding:5px" src="img/local.properties.png" alt="local.properties"/>
 
 ## Testing the application
 
@@ -73,7 +73,7 @@ Make sure you’re in the *cloud-watch-for-marklogic* directory. Run *./cronClou
 
 <img style="width:100%;padding:5px" src="img/crontab-added.png" alt="crontab added"/>
 
-This sets up a cron job that runs every minute that collects MarkLogic metrics. It’s based on metrics.xml. A typical entry is
+This sets up a cron job that runs every minute that collects MarkLogic metrics. It’s based on [metrics.xml](https://github.com/ken-tune/cloud-watch-for-marklogic/blob/master/metrics.xml). A typical entry is
 
 <img style="width:50%;padding:5px" src="img/metrics.xml.png" alt="metrics.xml"/>
 
@@ -87,7 +87,7 @@ If you take a look at the crontab
 
 you’ll see it calls *python update-cloudwatch-metrics.py –storeMetrics*
 
-We can take a a look at what it’s does by calling directly (output truncated )
+We can take a look at what it’s does by calling directly (output truncated )
 
 <img style="width:100%;padding:5px" src="img/store-metrics.png" alt="store metrics"/>
 
@@ -116,7 +116,7 @@ You’ll also get an email similar to the below – which you need to confirm re
 
 <img style="width:100%;padding:5px" src="img/subscription-confirmation.png" alt="subscription confirmation"/>
 
-We can have a the alarms in the AWS console – I have 31 alarms set up.
+We can have a look at the alarms in the AWS console – I have 31 alarms set up.
 
 <img style="width:100%;padding:5px" src="img/alarms.png" alt="alarms"/>
 
@@ -138,7 +138,7 @@ and I can take a look at this in the AWS Console
 
 <img style="width:100%;padding:5px" src="img/activated-alarm.png" alt="activated alarm"/>
 
-Now I've got some simulated data coming in I can also use CloudWatch to take a look at what's happening on my cluster. Here's some data on usage of the expanded tree cache
+Now I've got some simulated data coming in I can use CloudWatch to take a look at what's happening on my cluster. Here's some data on usage of the expanded tree cache.
 
 <img style="width:100%;padding:5px" src="img/expanded-tree-cache-stats.png" alt="expanded tree cache stats"/>
 
