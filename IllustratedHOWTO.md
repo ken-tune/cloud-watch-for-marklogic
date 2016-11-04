@@ -2,7 +2,7 @@
 
 You’re running or thinking of running your MarkLogic cluster on AWS but you will want to know if anything out of the ordinary happens. [AWS CloudWatch](https://aws.amazon.com/cloudwatch/)  can help. It allows you to collect system metrics and, based on those metrics, alert you if the unexpected happens.
 
-MarkLogic Server helps you via it’s REST based Management API, which gives you real time data on every aspect of its internal operation.
+MarkLogic Server helps you via it’s [Monitoring API](http://docs.marklogic.com/guide/monitoring/monitoringAPI), which gives you real time data on every aspect of its internal operation.
 
 Finally you need something to tie things together. That’s where https://github.com/ken-tune/cloud-watch-for-marklogic comes in. A few straightforward steps will allow you to set up CloudWatch monitoring and alarms for your AWS cloud based MarkLogic app. 
 
