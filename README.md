@@ -1,6 +1,6 @@
 # CloudWatch for MarkLogic
 
-CloudWatch for MarkLogic helps set up AWS CloudWatch monitoring and alarms for MarkLogic Server
+CloudWatch for MarkLogic helps set up [AWS CloudWatch](https://aws.amazon.com/cloudwatch/) monitoring and alarms for [MarkLogic Server](http://www.marklogic.com).
 
 ## Quick Start
 
