@@ -46,7 +46,7 @@ Download ‘cloudwatch-for-marklogic’ - *git clone git@github.com:ken-tune/clo
 
 *cd cloudwatch-for-marklogic/test-application*
 
-Edit *deploy/local.properties* (screenshot below) - **user** and **password** should be the same as the values used for AdminUser/AdminPass in the CFT.
+Edit *deploy/local.properties* (screenshot below) - **user** and **password** should be the same as the values used for AdminUser/AdminPass in the CFT. Use something that can't be easily guessed.
 
 <img style="width:50%;padding:5px" src="img/local.properties.png" alt="local.properties"/>
 
