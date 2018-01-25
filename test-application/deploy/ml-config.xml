@@ -477,6 +477,9 @@
           <privilege-name>xdmp:get-server-field</privilege-name>
         </privilege>        
         <privilege>
+          <privilege-name>xdmp:set-server-field</privilege-name>
+        </privilege>                
+        <privilege>
           <privilege-name>unprotected-uri</privilege-name>
         </privilege>        
         <privilege>
